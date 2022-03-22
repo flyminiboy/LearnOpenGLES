@@ -31,13 +31,13 @@ class MainActivity : AppCompatActivity() {
         with(ActivityMainBinding.inflate(layoutInflater)){
             setContentView(root)
 
-            waitForIdle()
+//            waitForIdle()
 
 
 
             mainHellotriangle.setOnClickListener {
 
-//                startActivity(Intent(this@MainActivity, HellotriangleActivity::class.java))
+                startActivity(Intent(this@MainActivity, HellotriangleActivity::class.java))
             }
 
         }

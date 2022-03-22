@@ -68,9 +68,5 @@ fun createAndLinkProgrm(context: Context, vertexShader: Int, fragmentShader: Int
         // 在把着色器对象链接到程序对象以后，记得删除着色器对象，我们不再需要它们了
         GLES30.glDeleteShader(vertexShader)
         GLES30.glDeleteShader(fragmentShader)
-
-        // 工作流程
-        // 要使用刚才编译的着色器我们必须把它们链接为一个着色器程序对象，然后在渲染对象的时候激活这个着色器程序。
-        // 已激活着色器程序的着色器将在我们发送渲染调用的时候被使用
     }
 
