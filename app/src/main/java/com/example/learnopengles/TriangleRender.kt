@@ -50,13 +50,6 @@ class TriangleRender(surfaceView: TriangleSurfaceView) : GLSurfaceView.Renderer 
         .order(ByteOrder.nativeOrder())
         .asIntBuffer()
 
-    /**
-     * 纹理坐标
-     */
-    val textureCoords = floatArrayOf(
-
-    )
-
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
         logE("onSurfaceCreated")
@@ -94,7 +87,7 @@ class TriangleRender(surfaceView: TriangleSurfaceView) : GLSurfaceView.Renderer 
         // 表示位置数据在缓冲中起始位置的偏移量,由于位置数据在数组的开头，所以这里是0.在本示例中我们指定以了位置数据
 
         //
-            GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, verBuffer)
+        GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, verBuffer)
         // 使用VBO + VAO 优化
 //        GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, 0)
         // 现在我们已经定义了OpenGL该如何解释顶点数据，我们现在应该使用glEnableVertexAttribArray，以顶点属性位置值作为参数，启用顶点属性

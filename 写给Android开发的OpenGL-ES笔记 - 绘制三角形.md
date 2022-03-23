@@ -203,3 +203,4 @@ GLES30.glUseProgram(it)
 // 指定我们打算绘制多少个顶点
 GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 3)
 ```
+

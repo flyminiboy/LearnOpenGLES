@@ -36,8 +36,10 @@ class MainActivity : AppCompatActivity() {
 
 
             mainHellotriangle.setOnClickListener {
-
                 startActivity(Intent(this@MainActivity, HellotriangleActivity::class.java))
+            }
+            mainHellotexture.setOnClickListener {
+                startActivity(Intent(this@MainActivity, TextureActivity::class.java))
             }
 
         }
