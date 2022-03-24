@@ -14,6 +14,9 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
 
     var program: Int? = null
 
+    // 不同的绘制方式，一定要注意自己的顶点顺序，
+    // 其实不管是顶点法还是索引法，本质都是一样的，顶点法无法共享顶点，需要我们自己把定重复的顶点都定义出来。
+    // 索引法，就是可以一直共享这些顶点，通过索引去取值，实现一个排序，我们把索引法，定义的序列，都写出来其实就是我们的顶点法定义的顶点顺序。
     // GL_TRIANGLE_FAN 该方式下 绘制矩形，需要的顶点 第一个点和之后所有相邻的两个点构成一个三角形 012 023 034
 //    val vertexCoords = floatArrayOf(
 //        -1.0f, -1.0f, // 左下
@@ -21,6 +24,14 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
 //        1.0f, 1.0f, // 右上
 //        -1.0f, 1.0f // 左上
 //    )
+
+        val vertexCoords = floatArrayOf(
+        -1.0f, -1.0f, // 左下
+        1.0f, -1.0f, // 右下
+            -1.0f, 1.0f, // 左上
+        1.0f, 1.0f // 右上
+
+    )
 
     // GL_TRIANGLES 该方式下 绘制矩形，需要的顶点 每3个点构成一个三角形 012 345
 //    val vertexCoords = floatArrayOf(
@@ -33,12 +44,12 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
 //    )
 
     // GL_TRIANGLES_STRIP 相邻3个点构成一个三角形，不包括收尾两个点 012 123 4个顶点例子，
-    val vertexCoords = floatArrayOf(
-        -1.0f, -1.0f, // 左下
-        1.0f, -1.0f, // 右下
-        -1.0f, 1.0f, // 左上
-        1.0f, 1.0f // 右上
-    )
+//    val vertexCoords = floatArrayOf(
+//        -1.0f, -1.0f, // 左下
+//        1.0f, -1.0f, // 右下
+//        -1.0f, 1.0f, // 左上
+//        1.0f, 1.0f // 右上
+//    )
 
     // GL_TRIANGLES_STRIP 相邻3个点构成一个三角形，不包括收尾两个点 012 123 5个顶点例子， 前面四个顶点形成的矩形首尾没有闭合
 //    val vertexCoords = floatArrayOf(
@@ -59,6 +70,13 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
 //        0.0f, 1.0f // 左上
 //    )
 
+    val textureCoords = floatArrayOf(
+        0.0f, 0.0f, // 左下
+        1.0f, 0.0f, // 右下
+        0.0f, 1.0f, // 左上
+        1.0f, 1.0f // 右上
+    )
+
     // GL_TRIANGLES
 //    val textureCoords = floatArrayOf(
 //        0.0f, 0.0f, // 左下
@@ -70,12 +88,12 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
 //    )
 
 
-    val textureCoords = floatArrayOf(
-        0.0f, 0.0f, // 左下
-        1.0f, 0.0f, // 右下
-        0.0f, 1.0f, // 左上
-        1.0f, 1.0f // 右上
-    )
+//    val textureCoords = floatArrayOf(
+//        0.0f, 0.0f, // 左下
+//        1.0f, 0.0f, // 右下
+//        0.0f, 1.0f, // 左上
+//        1.0f, 1.0f // 右上
+//    )
 
 //    val textureCoords = floatArrayOf(
 //        0.0f, 0.0f, // 左下
@@ -190,7 +208,7 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
 //            GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 6)
             // GL_TRIANGLE_STRIP 很神奇的一个模式，这个实际测试结果和网络上好多说法都不一致，这个要特别注意。
             // 因为它绘制的特殊性，所以顶点的顺序决定它可能需要四个顶点，可能需要五个顶点，需要自己处理闭合
-            GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, 4)
+            GLES30.glDrawArrays(GLES30.GL_TRIANGLE_FAN, 0, 4)
 
             // 索引法绘制
             // 调用glDrawElements 方法在绘制
