@@ -41,6 +41,9 @@ class MainActivity : AppCompatActivity() {
             mainHellotexture.setOnClickListener {
                 startActivity(Intent(this@MainActivity, TextureActivity::class.java))
             }
+            mainHellosquare.setOnClickListener {
+                startActivity(Intent(this@MainActivity, SquareActivity::class.java))
+            }
 
         }
     }
