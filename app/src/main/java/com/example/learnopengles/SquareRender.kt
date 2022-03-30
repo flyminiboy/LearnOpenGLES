@@ -7,7 +7,7 @@ import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class SquareRender(surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
+class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
 
     val context by lazy {
         surfaceView.context
@@ -64,8 +64,24 @@ class SquareRender(surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             }
     }
 
-    val vbos = IntArray(1)
-    val vaos = IntArray(1)
+    val vbos = IntArray(2)
+    val vaos = IntArray(2)
+
+    val vexCoordsTriangle = floatArrayOf(
+        -0.5f, -0.5f,
+        0.5f, -0.5f,
+        0f, 0.5f
+    )
+
+    val verBufferTriangle by lazy {
+        // Must use a native order direct Buffer
+        ByteBuffer.allocateDirect(vexCoordsTriangle.size * 4)
+            .order(ByteOrder.nativeOrder())
+            .asFloatBuffer().also { buffer ->
+                buffer.put(vexCoordsTriangle)
+                buffer.position(0)
+            }
+    }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
 
@@ -80,9 +96,9 @@ class SquareRender(surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         program = createAndLinkProgrm(context, vertexShader, fragmentShader)
 
         // VAO
-        GLES30.glGenVertexArrays(1, vaos, 0)
+        GLES30.glGenVertexArrays(2, vaos, 0)
         // VBO
-        GLES30.glGenBuffers(1, vbos, 0)
+        GLES30.glGenBuffers(2, vbos, 0)
         // 要想使用VAO，要做的只是使用glBindVertexArray绑定VAO
         GLES30.glBindVertexArray(vaos[0])
         // 复制顶点数组到缓冲中供OpenGL使用
@@ -91,6 +107,22 @@ class SquareRender(surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             GLES30.GL_ARRAY_BUFFER,
             vexCoords.size * 4,
             verBuffer,
+            GLES30.GL_STATIC_DRAW
+        )
+
+        // 使用VBO
+        GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, 0)
+        // 现在我们已经定义了OpenGL该如何解释顶点数据，我们现在应该使用glEnableVertexAttribArray，以顶点属性位置值作为参数，启用顶点属性
+        GLES30.glEnableVertexAttribArray(0)
+
+        // 要想使用VAO，要做的只是使用glBindVertexArray绑定VAO
+        GLES30.glBindVertexArray(vaos[1])
+        // 复制顶点数组到缓冲中供OpenGL使用
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vbos[1])
+        GLES30.glBufferData(
+            GLES30.GL_ARRAY_BUFFER,
+            vexCoordsTriangle.size * 4,
+            verBufferTriangle,
             GLES30.GL_STATIC_DRAW
         )
 
@@ -113,6 +145,7 @@ class SquareRender(surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         GLES30.glViewport(0, 0, width, height)
     }
 
+    var i = 0
     override fun onDrawFrame(gl: GL10?) {
 
         logE("onDrawFrame")
@@ -131,7 +164,13 @@ class SquareRender(surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             // 在glUseProgram函数调用之后，每个着色器调用和渲染调用都会使用这个程序对象（也就是之前写的着色器)了
             GLES30.glUseProgram(it)
 
-            GLES30.glBindVertexArray(vaos[0])
+            if (i % 2 == 0) {
+                logE("999999999")
+                GLES30.glBindVertexArray(vaos[0]) // TODO  重要
+            } else {
+                logE("ffffffffff")
+                GLES30.glBindVertexArray(vaos[1]) // TODO  重要
+            }
 
 
             // 使用当前激活的着色器，之前定义的顶点属性配置，和VBO的顶点数据（通过VAO间接绑定）来绘制图元。
@@ -147,6 +186,11 @@ class SquareRender(surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             // GLES30.GL_UNSIGNED_SHORT
             GLES30.glDrawElements(GLES30.GL_TRIANGLES, 6, GLES30.GL_UNSIGNED_INT, indexBuffer)
 
+
+            surfaceView.postDelayed({
+                i++
+                surfaceView.requestRender()
+            }, 5000L)
 
             // 资源释放操作，这个现在使用GLSurfaceView 我先不关心这部分代码。
 //            GLES30.glDeleteVertexArrays(1, )

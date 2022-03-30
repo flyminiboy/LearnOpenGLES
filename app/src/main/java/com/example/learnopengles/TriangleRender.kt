@@ -7,13 +7,13 @@ import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class TriangleRender(surfaceView: TriangleSurfaceView) : GLSurfaceView.Renderer {
+class TriangleRender(val surfaceView: TriangleSurfaceView) : GLSurfaceView.Renderer {
 
     val context by lazy {
         surfaceView.context
     }
 
-    var program:Int?=null
+    var program: Int? = null
 
     /**
      * 顶点坐标
@@ -34,10 +34,10 @@ class TriangleRender(surfaceView: TriangleSurfaceView) : GLSurfaceView.Renderer 
         // Must use a native order direct Buffer
         ByteBuffer.allocateDirect(vexCoords.size * 4)
             .order(ByteOrder.nativeOrder())
-            .asFloatBuffer().also {buffer->
-            buffer.put(vexCoords)
-            buffer.position(0)
-        }
+            .asFloatBuffer().also { buffer ->
+                buffer.put(vexCoords)
+                buffer.position(0)
+            }
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -102,7 +102,6 @@ class TriangleRender(surfaceView: TriangleSurfaceView) : GLSurfaceView.Renderer 
             // 指定了顶点数组的起始索引
             // 指定我们打算绘制多少个顶点
             GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 3)
-
         }
 
 
