@@ -30,9 +30,9 @@ fun loadShaderSource(context: Context, rawId: Int) =
 
 
 fun loadShader(shaderType: Int, shaderSource: String) =
-
     // 创建着色器对象
     GLES30.glCreateShader(shaderType).also { shader ->
+
         // 将着色器源码附加到着色器上
         GLES30.glShaderSource(shader, shaderSource)
         GLES30.glCompileShader(shader)
@@ -42,6 +42,7 @@ fun loadShader(shaderType: Int, shaderSource: String) =
         if (compiled[0] == GLES30.GL_FALSE) {
             val error = GLES30.glGetShaderInfoLog(shader)
             logE("glCompileShader info [ $error ]")
+            GLES30.glDeleteShader(shader)
             return GLES30.GL_FALSE
         }
     }
@@ -50,6 +51,8 @@ fun loadShader(shaderType: Int, shaderSource: String) =
 fun createAndLinkProgrm(context: Context, vertexShader: Int, fragmentShader: Int) =
     // 构建着色器程序对象
     GLES30.glCreateProgram().also { program ->
+
+
 
         // 将着色器附加到着色器程序
         GLES30.glAttachShader(program, vertexShader)

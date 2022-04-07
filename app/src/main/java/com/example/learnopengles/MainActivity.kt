@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
             mainHellosquare.setOnClickListener {
                 startActivity(Intent(this@MainActivity, SquareActivity::class.java))
             }
+            mainHellocamera.setOnClickListener {
+                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
+            }
 
         }
     }

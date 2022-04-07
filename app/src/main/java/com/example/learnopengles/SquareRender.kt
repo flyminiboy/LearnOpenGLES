@@ -184,7 +184,7 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             // 注意第三个参数type的选择
             // GLES30.GL_UNSIGNED_INT
             // GLES30.GL_UNSIGNED_SHORT
-            GLES30.glDrawElements(GLES30.GL_TRIANGLES, 6, GLES30.GL_UNSIGNED_INT, indexBuffer)
+            GLES30.glDrawElements(GLES30.GL_TRIANGLE_FAN, 6, GLES30.GL_UNSIGNED_INT, indexBuffer)
 
 
             surfaceView.postDelayed({

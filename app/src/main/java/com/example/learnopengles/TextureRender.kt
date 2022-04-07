@@ -51,7 +51,7 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
 //        1.0f, 1.0f // 右上
 //    )
 
-    // GL_TRIANGLES_STRIP 相邻3个点构成一个三角形，不包括收尾两个点 012 123 5个顶点例子， 前面四个顶点形成的矩形首尾没有闭合
+    // GL_TRIANGLES_STRIP 相邻3个点构成一个三角形，不包括收尾两个点 012 123 5个顶点例子，
 //    val vertexCoords = floatArrayOf(
 //        -1.0f, -1.0f, // 左下
 //        1.0f, -1.0f, // 右下
