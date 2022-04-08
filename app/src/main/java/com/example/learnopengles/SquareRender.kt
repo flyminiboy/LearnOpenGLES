@@ -42,6 +42,16 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         0.5f, 0.5f
     )
 
+    val verBuffer by lazy {
+        // Must use a native order direct Buffer
+        ByteBuffer.allocateDirect(vexCoords.size * 4)
+            .order(ByteOrder.nativeOrder())
+            .asFloatBuffer().also { buffer ->
+                buffer.put(vexCoords)
+                buffer.position(0)
+            }
+    }
+
     val index = intArrayOf(
         0, 1, 2, 1, 2, 3
     )
@@ -54,17 +64,7 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             }
     }
 
-    val verBuffer by lazy {
-        // Must use a native order direct Buffer
-        ByteBuffer.allocateDirect(vexCoords.size * 4)
-            .order(ByteOrder.nativeOrder())
-            .asFloatBuffer().also { buffer ->
-                buffer.put(vexCoords)
-                buffer.position(0)
-            }
-    }
-
-    val vbos = IntArray(3)
+    val buffers = IntArray(3)
     val vaos = IntArray(2)
 
     val vexCoordsTriangle = floatArrayOf(
@@ -98,18 +98,19 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         // VAO
         GLES30.glGenVertexArrays(vaos.size, vaos, 0)
         // VBO
-        GLES30.glGenBuffers(vbos.size, vbos, 0)
+        GLES30.glGenBuffers(buffers.size, buffers, 0)
         // 要想使用VAO，要做的只是使用glBindVertexArray绑定VAO
         GLES30.glBindVertexArray(vaos[0])
         // 复制顶点数组到缓冲中供OpenGL使用
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vbos[0])
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, buffers[0])
         GLES30.glBufferData(
             GLES30.GL_ARRAY_BUFFER,
             vexCoords.size * 4,
             verBuffer,
             GLES30.GL_STATIC_DRAW
         )
-        GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, vbos[1])
+        // EBO
+        GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, buffers[1])
         GLES30.glBufferData(GLES30.GL_ELEMENT_ARRAY_BUFFER, index.size * 4, indexBuffer, GLES30.GL_STATIC_DRAW)
         // 使用VBO
         GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, 0)
@@ -119,7 +120,7 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         // 要想使用VAO，要做的只是使用glBindVertexArray绑定VAO
         GLES30.glBindVertexArray(vaos[1])
         // 复制顶点数组到缓冲中供OpenGL使用
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vbos[2])
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, buffers[2])
         GLES30.glBufferData(
             GLES30.GL_ARRAY_BUFFER,
             vexCoordsTriangle.size * 4,
