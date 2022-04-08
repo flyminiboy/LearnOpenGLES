@@ -64,7 +64,7 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             }
     }
 
-    val vbos = IntArray(2)
+    val vbos = IntArray(3)
     val vaos = IntArray(2)
 
     val vexCoordsTriangle = floatArrayOf(
@@ -96,9 +96,9 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         program = createAndLinkProgrm(context, vertexShader, fragmentShader)
 
         // VAO
-        GLES30.glGenVertexArrays(2, vaos, 0)
+        GLES30.glGenVertexArrays(vaos.size, vaos, 0)
         // VBO
-        GLES30.glGenBuffers(2, vbos, 0)
+        GLES30.glGenBuffers(vbos.size, vbos, 0)
         // 要想使用VAO，要做的只是使用glBindVertexArray绑定VAO
         GLES30.glBindVertexArray(vaos[0])
         // 复制顶点数组到缓冲中供OpenGL使用
@@ -109,7 +109,8 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             verBuffer,
             GLES30.GL_STATIC_DRAW
         )
-
+        GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, vbos[1])
+        GLES30.glBufferData(GLES30.GL_ELEMENT_ARRAY_BUFFER, index.size * 4, indexBuffer, GLES30.GL_STATIC_DRAW)
         // 使用VBO
         GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, 0)
         // 现在我们已经定义了OpenGL该如何解释顶点数据，我们现在应该使用glEnableVertexAttribArray，以顶点属性位置值作为参数，启用顶点属性
@@ -118,14 +119,13 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
         // 要想使用VAO，要做的只是使用glBindVertexArray绑定VAO
         GLES30.glBindVertexArray(vaos[1])
         // 复制顶点数组到缓冲中供OpenGL使用
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vbos[1])
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vbos[2])
         GLES30.glBufferData(
             GLES30.GL_ARRAY_BUFFER,
             vexCoordsTriangle.size * 4,
             verBufferTriangle,
             GLES30.GL_STATIC_DRAW
         )
-
         // 使用VBO
         GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, 0)
         // 现在我们已经定义了OpenGL该如何解释顶点数据，我们现在应该使用glEnableVertexAttribArray，以顶点属性位置值作为参数，启用顶点属性
@@ -167,9 +167,11 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             if (i % 2 == 0) {
                 logE("999999999")
                 GLES30.glBindVertexArray(vaos[0]) // TODO  重要
+                GLES30.glDrawElements(GLES30.GL_TRIANGLES, 6, GLES30.GL_UNSIGNED_INT, 0)
             } else {
                 logE("ffffffffff")
                 GLES30.glBindVertexArray(vaos[1]) // TODO  重要
+                GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 3)
             }
 
 
@@ -179,12 +181,12 @@ class SquareRender(val surfaceView: GLSurfaceView) : GLSurfaceView.Renderer {
             // 指定我们打算绘制多少个顶点
 
 
-//            GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 6)
+//
 
             // 注意第三个参数type的选择
             // GLES30.GL_UNSIGNED_INT
             // GLES30.GL_UNSIGNED_SHORT
-            GLES30.glDrawElements(GLES30.GL_TRIANGLE_FAN, 6, GLES30.GL_UNSIGNED_INT, indexBuffer)
+
 
 
             surfaceView.postDelayed({
