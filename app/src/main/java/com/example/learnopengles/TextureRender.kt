@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
+import android.view.TextureView
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
@@ -18,20 +19,19 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
     // 其实不管是顶点法还是索引法，本质都是一样的，顶点法无法共享顶点，需要我们自己把定重复的顶点都定义出来。
     // 索引法，就是可以一直共享这些顶点，通过索引去取值，实现一个排序，我们把索引法，定义的序列，都写出来其实就是我们的顶点法定义的顶点顺序。
     // GL_TRIANGLE_FAN 该方式下 绘制矩形，需要的顶点 第一个点和之后所有相邻的两个点构成一个三角形 012 023 034
-//    val vertexCoords = floatArrayOf(
-//        -1.0f, -1.0f, // 左下
-//        1.0f, -1.0f, // 右下
-//        1.0f, 1.0f, // 右上
-//        -1.0f, 1.0f // 左上
-//    )
-
-        val vertexCoords = floatArrayOf(
+    val vertexCoords = floatArrayOf(
         -1.0f, -1.0f, // 左下
         1.0f, -1.0f, // 右下
-            -1.0f, 1.0f, // 左上
-        1.0f, 1.0f // 右上
-
+        1.0f, 1.0f, // 右上
+        -1.0f, 1.0f // 左上
     )
+
+//        val vertexCoords = floatArrayOf(
+//        -1.0f, -1.0f, // 左下
+//        1.0f, -1.0f, // 右下
+//        -1.0f, 1.0f, // 左上
+//        1.0f, 1.0f // 右上
+//    )
 
     // GL_TRIANGLES 该方式下 绘制矩形，需要的顶点 每3个点构成一个三角形 012 345
 //    val vertexCoords = floatArrayOf(
@@ -63,19 +63,19 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
     // 纹理坐标 这样最终绘制出来的图片是倒的 转了180度
 
     // GL_TRIANGLE_FAN
-//    val textureCoords = floatArrayOf(
-//        0.0f, 0.0f, // 左下
-//        1.0f, 0.0f, // 右下
-//        1.0f, 1.0f, // 右上
-//        0.0f, 1.0f // 左上
-//    )
-
     val textureCoords = floatArrayOf(
         0.0f, 0.0f, // 左下
         1.0f, 0.0f, // 右下
-        0.0f, 1.0f, // 左上
-        1.0f, 1.0f // 右上
+        1.0f, 1.0f, // 右上
+        0.0f, 1.0f // 左上
     )
+
+//    val textureCoords = floatArrayOf(
+//        0.0f, 0.0f, // 左下
+//        1.0f, 0.0f, // 右下
+//        0.0f, 1.0f, // 左上
+//        1.0f, 1.0f // 右上
+//    )
 
     // GL_TRIANGLES
 //    val textureCoords = floatArrayOf(
@@ -156,18 +156,18 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
         // 绑定纹理
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textures[0])
         // 为当前绑定的纹理对象设置环绕、过滤方式
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_REPEAT);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_REPEAT);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_REPEAT)
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_REPEAT)
         GLES30.glTexParameteri(
             GLES30.GL_TEXTURE_2D,
             GLES30.GL_TEXTURE_MIN_FILTER,
             GLES30.GL_LINEAR
-        );
+        )
         GLES30.glTexParameteri(
             GLES30.GL_TEXTURE_2D,
             GLES30.GL_TEXTURE_MAG_FILTER,
             GLES30.GL_LINEAR
-        );
+        )
 
         // 将bitmaph转换纹理
         val bitmap = BitmapFactory.decodeResource(surfaceView.context.resources, R.drawable.a)

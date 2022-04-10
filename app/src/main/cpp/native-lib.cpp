@@ -62,6 +62,8 @@ Java_com_example_learnopengles_NDKEGLHelper_createSurface(JNIEnv *env, jobject t
     const EGLint attrib_list[] = {
             EGL_NONE
     };
+
+
     ANativeWindow *window = ANativeWindow_fromSurface(env, surface);
     eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, window, attrib_list);
     if (eglSurface == EGL_NO_SURFACE) {
