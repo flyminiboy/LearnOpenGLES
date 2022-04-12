@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.opengl.GLES30
 import android.opengl.GLSurfaceView
 import android.opengl.GLUtils
+import android.opengl.Matrix
 import android.view.TextureView
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -63,12 +64,30 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
     // 纹理坐标 这样最终绘制出来的图片是倒的 转了180度
 
     // GL_TRIANGLE_FAN
+//    val textureCoords = floatArrayOf(
+//        0.0f, 0.0f, // 左下
+//        1.0f, 0.0f, // 右下
+//        1.0f, 1.0f, // 右上
+//        0.0f, 1.0f // 左上
+//    )
+
+
+
+//    做一个镜像
     val textureCoords = floatArrayOf(
-        0.0f, 0.0f, // 左下
-        1.0f, 0.0f, // 右下
         1.0f, 1.0f, // 右上
-        0.0f, 1.0f // 左上
+        0.0f, 1.0f, // 左上
+        0.0f, 0.0f, // 左下
+        1.0f, 0.0f // 右下
     )
+
+    // 修正纹理显示倒 旋转180度 上下倒
+//    val textureCoords = floatArrayOf(
+//        0.0f, 1.0f, // 左上
+//        1.0f, 1.0f, // 右上
+//        1.0f, 0.0f, // 右下
+//        0.0f, 0.0f // 左下
+//    )
 
 //    val textureCoords = floatArrayOf(
 //        0.0f, 0.0f, // 左下
@@ -180,8 +199,19 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
 
     }
 
+    private val vPMatrix = FloatArray(16)
+    // 投影矩阵
+    private val projectionMatrix = FloatArray(16)
+    // 相机视图矩阵
+    private val viewMatrix = FloatArray(16)
+    private var vPMatrixHandle: Int = 0
+
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         // 设置视口
+        GLES30.glViewport(0, 0, width, height)
+        val ratio: Float = width.toFloat() / height.toFloat()
+        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
+
     }
 
     override fun onDrawFrame(gl: GL10?) {
@@ -199,6 +229,20 @@ class TextureRender(val surfaceView: TextureSurfaceView) : GLSurfaceView.Rendere
             GLES30.glActiveTexture(GLES30.GL_TEXTURE0) // 在绑定纹理之前先激活纹理单元 纹理单元GL_TEXTURE0默认总是被激活
             // 绑定纹理
             GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textures[0])
+
+            // Set the camera position (View matrix)
+            // 设置相机视图转换
+            Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, -3f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
+
+            // Calculate the projection and view transformation
+            // 相机视图矩阵和投影矩阵合并
+            Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
+
+            // get handle to shape's transformation matrix
+            vPMatrixHandle = GLES30.glGetUniformLocation(it, "uMVPMatrix")
+
+            // Pass the projection and view transformation to the shader
+            GLES30.glUniformMatrix4fv(vPMatrixHandle, 1, false, vPMatrix, 0)
 
             // 顶点法绘制
             // 调用glDrawArrays方法来进行物体的绘制，
