@@ -54,4 +54,16 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"/>
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/main_hellomatrix"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="矩阵测试"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_hellocamera"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

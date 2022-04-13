@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
             mainHellocamera.setOnClickListener {
                 startActivity(Intent(this@MainActivity, CameraActivity::class.java))
             }
+            mainHellomatrix.setOnClickListener {
+                startActivity(Intent(this@MainActivity, MatrixActivity::class.java))
+            }
 
         }
     }
