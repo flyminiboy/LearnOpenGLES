@@ -118,6 +118,9 @@ class MatrixRender(val surfaceView: MatrixSurfaceView) : GLSurfaceView.Renderer 
         // 直接利用 Matrix 来实现
 
         // 填充投影矩阵
+        // 定义了 平截头体 - 由投影矩阵创建的观察箱(Viewing Box)被称为平截头体(Frustum)
+        //
+        // 7 8 参数 近平面 远平面
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
     }
 
@@ -130,8 +133,13 @@ class MatrixRender(val surfaceView: MatrixSurfaceView) : GLSurfaceView.Renderer 
             GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
 
             // 设置相机位置 填充相机视图变换矩阵
+            // 3-5 参数 摄像机位置，眼睛观察的位置
+            // 6-8 目标位置，一般是 0，0，0.物体中心点
+            // 9-11 上向量
             Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, 7f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
             // 将投影矩阵和相机视图矩阵进行计算
+            // 将俩个 4 X 4 的矩阵进行相乘，结果保存在第三个矩阵中（第一个参数）。
+            // 注意矩阵乘法不遵守交换律
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
             // 激活程序对象

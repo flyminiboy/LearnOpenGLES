@@ -89,18 +89,21 @@ class CameraSurfaceView(context: Context, attr: AttributeSet? = null) : SurfaceV
                 program = createAndLinkProgrm(context, vertexShader, fragmentShader)
                 logE("createandlink result [$program]")
 
-                GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, verBuffer)
-                // 现在我们已经定义了OpenGL该如何解释顶点数据，我们现在应该使用glEnableVertexAttribArray，以顶点属性位置值作为参数，启用顶点属性
-                GLES30.glEnableVertexAttribArray(0)
 
-                GLES30.glViewport(0, 0, mWidth, mHeight)
+                NDKEGLHelper.draw(program, width, height, vexCoords)
 
-                GLES30.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
-                GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
-
-                GLES30.glUseProgram(program)
-
-                GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 3)
+//                GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, verBuffer)
+//                // 现在我们已经定义了OpenGL该如何解释顶点数据，我们现在应该使用glEnableVertexAttribArray，以顶点属性位置值作为参数，启用顶点属性
+//                GLES30.glEnableVertexAttribArray(0)
+//
+//                GLES30.glViewport(0, 0, mWidth, mHeight)
+//
+//                GLES30.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
+//                GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
+//
+//                GLES30.glUseProgram(program)
+//
+//                GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 3)
 
 //                eglHelper.swap()
                 NDKEGLHelper.swap()

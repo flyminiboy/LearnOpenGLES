@@ -88,3 +88,33 @@ JNIEXPORT void JNICALL
 Java_com_example_learnopengles_NDKEGLHelper_swap(JNIEnv *env, jobject thiz) {
     eglSwapBuffers(eglDisplay, eglSurface);
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_learnopengles_NDKEGLHelper_draw(JNIEnv *env, jobject thiz, jint program,
+                                                 jint width, jint height, jfloatArray data) {
+
+//    GLfloat vertices[] = {
+//            -0.5f, -0.5f,
+//            0.5f, -0.5f,
+//            0.0f, 0.5f
+//    };
+
+    jfloat *_data = env->GetFloatArrayElements(data, nullptr);
+    jint len = env->GetArrayLength(data);
+
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(_data) * len, _data, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, false, 2 * 4, (void *) 0);
+    glEnableVertexAttribArray(0);
+
+    glViewport(0, 0, width, height);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(program);
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+}

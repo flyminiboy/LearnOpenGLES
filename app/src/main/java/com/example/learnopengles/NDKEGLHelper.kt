@@ -17,4 +17,6 @@ object NDKEGLHelper {
 
     external fun swap()
 
+    external fun draw(program:Int, width:Int, height:Int, data:FloatArray)
+
 }
